@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import logo from "../../assets/logo.png";
 
 export default function NavBar() {
   const { user, logout } = useAuth();
@@ -12,8 +13,8 @@ export default function NavBar() {
         <div className="flex items-center justify-between h-16">
           {/* Left: Brand */}
           <div className="flex items-center">
-            <Link to="/" className="text-2xl font-bold text-gray-800">
-              <span className="text-blue-600">Job</span>Portal
+            <Link to="/">
+              <img src={logo} alt="Logo"/>
             </Link>
           </div>
 
