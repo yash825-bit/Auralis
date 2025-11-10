@@ -22,6 +22,7 @@ from schemas.user import UserCreate
 from core.config import settings
 from crud.user import create_user
 
+from listeners.user_listeners import delete_deactivated_users
 from listeners.token_listeners import delete_expired_tokens
 
 Base.metadata.create_all(bind=engine)
@@ -61,6 +62,7 @@ def sync_admins():
 def start_scheduler():
     scheduler = BackgroundScheduler()
     scheduler.add_job(delete_expired_tokens, "interval", minutes=30)
+    scheduler.add_job(delete_deactivated_users, "interval", days=1)
     scheduler.start()
     return scheduler
 

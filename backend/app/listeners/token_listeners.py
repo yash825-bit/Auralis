@@ -1,10 +1,9 @@
 from datetime import datetime, timezone
-from sqlalchemy import event, update
+from sqlalchemy import event
 from sqlalchemy.orm import Session
 
 from database.session import get_sync_session
 from models.token import Token
-from models.user import User
 
 
 def delete_expired_tokens() -> None:
