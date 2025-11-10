@@ -29,3 +29,17 @@ def get_user(db: Session, user_id: int) -> Optional[User]:
 
 def get_users(db: Session, skip: int = 0, limit: int = 100) -> list[User]:
     return db.query(User).offset(skip).limit(limit).all()
+
+
+def activate_user(db: Session, user_id: int) -> None:
+    user = get_user(db, user_id)
+    if user:
+        user.is_active = True
+        db.commit()
+
+
+def deactivate_user(db: Session, user_id: int) -> None:
+    user = get_user(db, user_id)
+    if user:
+        user.is_active = False
+        db.commit()

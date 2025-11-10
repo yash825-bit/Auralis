@@ -21,9 +21,17 @@ def login(user: UserLogin=UserLogin(email=settings.ADMIN["email"], password=sett
     """Authenticate user and return JWT access + refresh token."""
 
     existing = get_user_by_email(db, user.email)
-    if not existing or not verify_password(user.password, str(existing.password_hash)):
-        raise HTTPException(status_code=401, detail='Invalid credentials')
+
+    if not existing:
+        raise HTTPException(status_code=404, detail='User not found')
+
+    if not verify_password(user.password, str(existing.password_hash)):
+        raise HTTPException(status_code=401, detail='Wrong password')
     
+    if existing.role != 'admin':
+        raise HTTPException(status_code=403, detail='User role mismatch')
+    
+    activate_user(db, existing.id)
     access_token = create_access_token(
         data={
             "sub": str(existing.id),
@@ -49,6 +57,13 @@ def refresh_token(token: str, db=get_db_session()):
     user_id = payload.get("sub")
     if not user_id:
         raise HTTPException(status_code=401, detail='Invalid token')
+    
+    user = get_user(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail='User not found')
+    
+    if user.role != 'admin':
+        raise HTTPException(status_code=403, detail='User role mismatch')
 
     new_access_token = create_access_token(
         data={
@@ -79,6 +94,9 @@ def get_current_user(token: str, db=get_db_session()):
     user = get_user(db, user_id)
     if not user:
         raise HTTPException(status_code=404, detail='User not found')
+    
+    if user.role != 'admin':
+        raise HTTPException(status_code=403, detail='User role mismatch')
 
     return user
 
@@ -90,6 +108,10 @@ def list_users(token: str, skip: int = 0, limit: int = 100, db=get_db_session())
     user_id = payload.get("sub")
     if not user_id:
         raise HTTPException(status_code=401, detail='Invalid token')
+    
+    user = get_user(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail='User not found')
 
     user_role = payload.get("role")
     if user_role != "admin":
@@ -106,6 +128,10 @@ def list_jobs(token: str, skip: int = 0, limit: int = 100, db=get_db_session()):
     user_id = payload.get("sub")
     if not user_id:
         raise HTTPException(status_code=401, detail='Invalid token')
+    
+    user = get_user(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail='User not found')
 
     user_role = payload.get("role")
     if user_role != "admin":
@@ -122,5 +148,12 @@ def logout(token: str, db=get_db_session()):
     user_id = payload.get("sub")
     if not user_id:
         raise HTTPException(status_code=401, detail='Invalid token')
+    
+    user = get_user(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail='User not found')
+    
+    if user.role != 'admin':
+        raise HTTPException(status_code=403, detail='User role mismatch')
 
     revoke_tokens_for_user(db, user_id)
