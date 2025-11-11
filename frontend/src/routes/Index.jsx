@@ -4,7 +4,8 @@ import About from "../pages/About";
 import PageNotFound from "../pages/PageNotFound";
 import Login from "../pages/Login";
 
-export default function AppRoutes() {
+export default function AppRoutes()
+{
   return (
     <BrowserRouter>
       <Routes>
