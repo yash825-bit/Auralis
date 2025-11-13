@@ -15,7 +15,7 @@ router = APIRouter()
 
 
 @router.post('/login')
-def login(user: UserLogin=UserLogin(email="user1@gmail.com", password="user1"), db: Session = get_db_session()) -> Dict[str, str]:
+def login(user: UserLogin, db: Session = get_db_session()) -> Dict[str, str]:
     """Authenticate user and return JWT access + refresh token."""
     existing = get_user_by_email(db, user.email)
 

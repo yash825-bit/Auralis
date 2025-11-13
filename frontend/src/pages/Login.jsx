@@ -22,10 +22,16 @@ export default function Login() {
       password: form.password
     };
     login(payload).then((response) => {
-      if(response.error) {alert(response.message);}
-      else {console.log('Login successful:', response);}
+      if(response.error)
+      {
+        alert(response.message);
+      }
+      else
+      {
+        setForm({ email: '', password: '' });
+        console.log(response);
+      }
     })
-    .catch((err) => {alert('Something went wrong: ' + err.message);});
   };
 
   return (
