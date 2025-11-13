@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from datetime import datetime, timezone
-from typing import Dict
+from typing import Dict, cast
 from sqlalchemy.orm import Session
 
 from core.security import verify_password, create_access_token, decode_token
@@ -25,7 +25,7 @@ def login(user: UserLogin=UserLogin(email="user1@gmail.com", password="user1"), 
     if not verify_password(user.password, str(existing.password_hash)):
         raise HTTPException(status_code=401, detail='Wrong password')
     
-    activate_user(db, existing.id)
+    activate_user(db, cast(int, existing.id))
     access_token = create_access_token(
         data={
             "sub": str(existing.id),
@@ -37,7 +37,7 @@ def login(user: UserLogin=UserLogin(email="user1@gmail.com", password="user1"), 
 
     refresh_entry = create_refresh_token(
         db,
-        user_id=int(existing.id),
+        user_id=cast(int, existing.id),
         refresh_token_hash=access_token,
     )
 
