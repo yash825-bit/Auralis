@@ -25,7 +25,7 @@ export default function About()
         {/* About Section */}
         <section className="relative z-10 max-w-6xl mx-auto px-6 py-24 flex flex-col items-center text-center">
           {/* Title */}
-          <h1 className="text-4xl md:text-5xl font-bold font-extrabold bg-gradient-to-r from-[#40ffaa] via-[#4079ff] to-[#40ffaa] bg-[length:300%_300%] animate-gradient-text bg-clip-text text-transparent drop-shadow-lg">
+          <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-[#40ffaa] via-[#4079ff] to-[#40ffaa] bg-[length:300%_300%] animate-gradient-text bg-clip-text text-transparent drop-shadow-lg">
             About Us
           </h1>
 
@@ -144,7 +144,7 @@ export default function About()
 
             <ProfileCard
               name="Sumit Singh"
-              title="ML Engineer"
+              title="Frontend Developer"
               handle="SumitSJ-2004"
               contactText="Github Profile"
               iconUrl="https://github.com/SumitSJ-2004.png"
