@@ -4,9 +4,9 @@ import About from "../pages/About";
 import PageNotFound from "../pages/PageNotFound";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
+import Contact from "../pages/Contact";
 
-export default function AppRoutes()
-{
+export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
@@ -15,7 +15,8 @@ export default function AppRoutes()
         <Route path="/about" element={<About />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
-        <Route path="*" element={<PageNotFound />} />
+        <Route path="/Contact" element={<Contact />} />
+        {/* <Route path="*" element={<PageNotFound />} /> */}
       </Routes>
     </BrowserRouter>
   );
