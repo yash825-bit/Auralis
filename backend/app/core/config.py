@@ -34,6 +34,15 @@ class Settings(BaseSettings):
         default_factory=lambda: json.load(open("core/admins.json", encoding="utf-8")) or []
     )
 
+    SMTP_HOST: str = Field(default_factory=lambda: getenv("SMTP_HOST", "smtp.gmail.com"))
+    SMTP_PORT: int = Field(default_factory=lambda: int(getenv("SMTP_PORT", "587")))
+    SMTP_USERNAME: str = Field(default_factory=lambda: getenv("SMTP_USERNAME", ""))
+    SMTP_PASSWORD: str = Field(default_factory=lambda: getenv("SMTP_PASSWORD", ""))
+    SMTP_USE_TLS: bool = Field(default_factory=lambda: getenv("SMTP_USE_TLS", "true").lower() == "true")
+    CONTACT_RECIPIENT_EMAIL: str = Field(
+        default_factory=lambda: getenv("CONTACT_RECIPIENT_EMAIL", "sumit.s.j2004@gmail.com")
+    )
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

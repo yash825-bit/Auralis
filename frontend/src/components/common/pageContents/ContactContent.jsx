@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import SpotlightCard from "../SpotlightCard";
+import { sendContactMessage } from "../../../services/api";
 
 export default function ContactContent() {
   const [form, setForm] = useState({
@@ -8,15 +9,33 @@ export default function ContactContent() {
     subject: "",
     message: "",
   });
+  const [status, setStatus] = useState({ type: null, message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Contact form submitted:", form);
-    alert("Thank you for reaching out! We'll get back to you soon.");
-    setForm({ name: "", email: "", subject: "", message: "" });
+    setStatus({ type: null, message: "" });
+    setIsSubmitting(true);
+
+    const response = await sendContactMessage(form);
+
+    if (response.error) {
+      setStatus({
+        type: "error",
+        message: response.message || "We could not send your message. Please try again.",
+      });
+    } else {
+      setStatus({
+        type: "success",
+        message: "Message sent successfully! We will be in touch soon.",
+      });
+      setForm({ name: "", email: "", subject: "", message: "" });
+    }
+
+    setIsSubmitting(false);
   };
 
   return (
@@ -33,7 +52,14 @@ export default function ContactContent() {
 
             <p className="text-center text-slate-400 text-sm mt-3">
               Have a question, feedback, or collaboration idea? We'd love to
-              hear from you.
+              hear from you. You can also reach us directly at{" "}
+              <a
+                href="mailto:sumit.s.j2004@gmail.com"
+                className="text-sky-300 underline hover:text-sky-200"
+              >
+                sumit.s.j2004@gmail.com
+              </a>
+              .
             </p>
 
             <form onSubmit={handleSubmit} className="mt-10 space-y-6">
@@ -101,11 +127,26 @@ export default function ContactContent() {
 
               <button
                 type="submit"
+                disabled={isSubmitting}
                 className="w-full mt-4 py-3 rounded-lg bg-gradient-to-r from-indigo-500 to-sky-400 text-white font-semibold hover:shadow-[0_0_12px_rgba(56,189,248,0.5)] hover:from-indigo-600 hover:to-sky-500 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
               >
-                Send Message
+                {isSubmitting ? "Sending..." : "Send Message"}
               </button>
             </form>
+
+            {status.message && (
+              <div
+                className={`mt-6 rounded-lg border px-4 py-3 text-sm ${
+                  status.type === "success"
+                    ? "border-green-500/40 bg-green-500/10 text-green-200"
+                    : "border-red-500/40 bg-red-500/10 text-red-200"
+                }`}
+                role="status"
+                aria-live="polite"
+              >
+                {status.message}
+              </div>
+            )}
           </section>
         </SpotlightCard>
       </div>

@@ -214,3 +214,26 @@ export const getAdminJobs = async (skip = 0, limit = 100) => {
   return apiCall(`/admin/jobs?token=${encodeURIComponent(token)}&skip=${skip}&limit=${limit}`);
 };
 
+// Contact API
+export const sendContactMessage = async (payload) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/contact/send`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return { error: true, message: data.detail || 'Failed to send message' };
+    }
+
+    return { success: true };
+  } catch (error) {
+    return { error: true, message: error.message || 'Network error' };
+  }
+};
+

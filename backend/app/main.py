@@ -6,6 +6,7 @@ from api.v1 import candidate
 from api.v1 import recruiter
 from api.v1 import admin
 from api.v1 import user
+from api.v1 import contact
 from database.base import Base, engine
 from database.session import get_sync_session
 
@@ -44,6 +45,7 @@ app.include_router(user.router, prefix="/api/v1/user", tags=["User"])
 app.include_router(candidate.router, prefix="/api/v1/candidate", tags=["Candidate"])
 app.include_router(recruiter.router, prefix="/api/v1/recruiter", tags=["Recruiter"])
 app.include_router(admin.router, prefix="/api/v1/admin", tags=["Admin"])
+app.include_router(contact.router, prefix="/api/v1/contact", tags=["Contact"])
 
 def sync_admins():
     """Synchronize single admin from settings.ADMIN with database."""
