@@ -17,3 +17,7 @@ def create_resume(db: Session, user_id: int, filename: str, storage_path: str, p
 
 def get_resumes_by_user(db: Session, user_id: int) -> List[Resume]:
     return db.query(Resume).filter(Resume.user_id == user_id).all()
+
+
+def get_resume_by_user_id(db: Session, user_id: int) -> Optional[Resume]:
+    return db.query(Resume).filter(Resume.user_id == user_id).first()
