@@ -1,42 +1,31 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import UserTable from "../../components/admin/UserTable";
+import { getAllUsers } from "../../services/api";
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  // Mock data (replace with API later)
   useEffect(() => {
-    const data = [
-      {
-        id: 1,
-        name: "Yash Goyal",
-        email: "yash@example.com",
-        role: "Candidate",
-        is_active: true,
-        created_at: "2025-11-10 14:32",
-        updated_at: "2025-11-11 09:15",
-      },
-      {
-        id: 2,
-        name: "Rohan Sharma",
-        email: "rohan@company.com",
-        role: "Recruiter",
-        is_active: true,
-        created_at: "2025-11-09 18:21",
-        updated_at: "2025-11-11 08:02",
-      },
-      {
-        id: 3,
-        name: "Priya Singh",
-        email: "priya@gmail.com",
-        role: "Candidate",
-        is_active: false,
-        created_at: "2025-10-22 10:45",
-        updated_at: "2025-11-01 12:10",
-      },
-    ];
-    setUsers(data);
+    loadUsers();
   }, []);
+
+  const loadUsers = async () => {
+    setLoading(true);
+    const response = await getAllUsers();
+    if (response.error) {
+      if (response.message.includes("token") || response.message.includes("Invalid")) {
+        navigate("/login");
+      } else {
+        alert(response.message || "Failed to load users");
+      }
+    } else {
+      setUsers(response);
+    }
+    setLoading(false);
+  };
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#06071a] via-[#071233] to-[#041028] text-slate-200 px-6 py-16">
@@ -53,7 +42,11 @@ export default function AdminUsers() {
 
       {/* Table */}
       <div className="max-w-6xl mx-auto">
-        <UserTable users={users} />
+        {loading ? (
+          <div className="text-center py-12 text-slate-400">Loading users...</div>
+        ) : (
+          <UserTable users={users} />
+        )}
       </div>
     </main>
   );
